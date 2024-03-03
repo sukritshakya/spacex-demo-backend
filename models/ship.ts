@@ -1,6 +1,7 @@
-import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+import { Sequelize, Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, NonAttribute } from 'sequelize';
+import { Mission } from './mission';
 
-type OmitTypes = '';
+type OmitTypes = 'missions';
 
 class Ship extends Model<
   InferAttributes<
@@ -21,6 +22,7 @@ class Ship extends Model<
   declare name?: string | null;
   declare image?: string | null;
   declare active: boolean;
+  declare missions?: NonAttribute<Mission[]>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
@@ -46,8 +48,9 @@ class Ship extends Model<
 
     return Ship;
   }
-  // public static associate = ({  }) => {
-  // };
+  public static associate = ({ Mission }) => {
+    Ship.hasMany(Mission, { foreignKey: 'shipId', as: 'missions' });
+  };
 }
 
 export { Ship, Ship as ShipAttributes };

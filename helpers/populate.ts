@@ -29,6 +29,41 @@ const populate = async () => {
     }),
   );
 
+  const rockets = await fetch('https://spacex-production.up.railway.app/api/graphql', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: '{ rockets { id name description company cost_per_launch stages boosters wikipedia payload_weights { id kg lb name} } }' }),
+  })
+    .then(res => res.json())
+    .then(data => data.data.rockets);
+
+  await Promise.all(
+    rockets.map(async (rocket: any) => {
+      const newRocket = await db.Rocket.create({
+        id: rocket.id,
+        name: rocket.name,
+        description: rocket.description,
+        company: rocket.company,
+        costPerLaunch: rocket.cost_per_launch,
+        stages: rocket.stages,
+        boosters: rocket.boosters,
+        wikipedia: rocket.wikipedia
+      });
+
+      await Promise.all(
+        rocket.payload_weights.map((payloadWeight: any) => {
+          return db.PayloadWeight.create({
+            stringId: payloadWeight.id,
+            name: payloadWeight.name,
+            kg: payloadWeight.kg,
+            lb: payloadWeight.lb,
+            rocketId: newRocket.id
+          });
+        }),
+      );
+    }),
+  );
+
   await db.sequelize.close();
 };
 

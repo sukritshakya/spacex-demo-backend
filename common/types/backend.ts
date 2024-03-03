@@ -42,6 +42,7 @@ export type Query = {
   blockApp: BlockApp;
   ships?: Maybe<Array<Ship>>;
   user: User;
+  rockets?: Maybe<Array<Rocket>>;
 };
 
 
@@ -54,10 +55,13 @@ export type QueryShipsArgs = {
   input: ShipsInput;
 };
 
-
 export type QueryUserArgs = {
   input: UserInput;
 };
+
+export type QueryRocketsArgs = {
+  input: RocketsInput;
+}
 
 export type Ship = {
   __typename?: 'Ship';
@@ -88,6 +92,31 @@ export type UserInput = {
   userId: Scalars['String'];
 };
 
+export type Rocket = {
+  __typename?: 'Rocket';
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  company?: Maybe<Scalars['String']>;
+  costPerLaunch?: Maybe<Scalars['Int']>;
+  stages?: Maybe<Scalars['Int']>;
+  boosters?: Maybe<Scalars['Int']>;
+  wikipedia?: Maybe<Scalars['String']>;
+  payloadWeights?: Maybe<Array<PayloadWeight>>;
+};
+
+export type RocketsInput = {
+  pagination: PaginationInput;
+};
+
+export type PayloadWeight = {
+  __typename?: 'PayloadWeight';
+  id: Scalars['String'];
+  stringId: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  kg?: Maybe<Scalars['Int']>;
+  lb?: Maybe<Scalars['Int']>;
+}
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -171,6 +200,8 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>;
   User: ResolverTypeWrapper<User>;
   UserInput: UserInput;
+  Rocket: ResolverTypeWrapper<Rocket>;
+  RocketsInput: RocketsInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -189,6 +220,8 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   User: User;
   UserInput: UserInput;
+  Rocket: Rocket;
+  RocketsInput: RocketsInput;
 };
 
 export type BlockAppResolvers<ContextType = any, ParentType extends ResolversParentTypes['BlockApp'] = ResolversParentTypes['BlockApp']> = {
@@ -209,6 +242,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   blockApp?: Resolver<ResolversTypes['BlockApp'], ParentType, ContextType, RequireFields<QueryBlockAppArgs, 'input'>>;
   ships?: Resolver<Maybe<Array<ResolversTypes['Ship']>>, ParentType, ContextType, RequireFields<QueryShipsArgs, 'input'>>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'input'>>;
+  rockets?: Resolver<Maybe<Array<ResolversTypes['Rocket']>>, ParentType, ContextType, RequireFields<QueryRocketsArgs, 'input'>>;
 };
 
 export type ShipResolvers<ContextType = any, ParentType extends ResolversParentTypes['Ship'] = ResolversParentTypes['Ship']> = {
@@ -232,6 +266,18 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type RocketResolvers<ContextType = any, ParentType extends ResolversParentTypes['Rocket'] = ResolversParentTypes['Rocket']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  company?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  costPerLaunch?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  stages?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  boosters?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  wikipedia?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   BlockApp?: BlockAppResolvers<ContextType>;
   Date?: GraphQLScalarType;
@@ -239,5 +285,6 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Ship?: ShipResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  Rocket?: RocketResolvers<ContextType>;
 };
 
